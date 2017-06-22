@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
-
 from flask import Flask, jsonify, render_template, request, flash, redirect
+import requests
 
 
 app = Flask(__name__)
@@ -17,24 +17,33 @@ def index():
 
     return render_template("homepage.html")
 
-# @app.route('/search')
-# def search():
-#     """Search."""
-#     # import pdb; pdb.set_trace()
-#     # 1. get form inputs (fname, lname)
-#     fname = request.args.get('fname')
-#     lname = request.args.get('lname')
 
-#     # 2. Search DB using SQLAlchemy for fname and lname (Table name is customerts)
-#     try:
-#         customer = db.session.query(Customer).filter(Customer.fname==fname).filter(Customer.lname==lname).one()
-#     except:
-#         flash("Customer not found!!!")
-#         return redirect('/')
 
-#     # 3. Display search results
-#     return render_template("search_results.html", customer=customer)
+@app.route('/search')
+def search():
+    """Search."""
 
+    # get form inputs:
+    destCity = request.args.get('destCity')
+    length = int(request.args.get('length'))
+    minStarRate = request.args.get('minStarRate')
+    maxStarRate = request.args.get('maxStarRate')
+    minGuestRate = request.args.get('minGuestRate')
+    maxGuestRate = request.args.get('maxGuestRate')
+
+    # Search API:
+    search_url = "http://offersvc.expedia.com/offers/v2/getOffers?scenario=deal-finder&page=foo&uid=foo&productType=Hotel&destinationCity={}&lengthOfStay={}".format(destCity, length)
+    try:
+        r = requests.get(search_url)
+    except:
+        flash("Search isn't available now!!!")
+        return redirect('/')
+
+    print search_url
+    print r.json()
+    # # 3. Display search results
+    # return render_template("search_results.html", customer=customer)
+    return render_template('search_results.html')
 
 # @app.route('/add-customer')
 # def add_customer():
@@ -80,8 +89,6 @@ if __name__ == "__main__":
     app.debug = True
 
     # make sure templates, etc. are not cached in debug mode
-    app.jinja_env.auto_reload = app.debug  
-
-    connect_to_db(app)
+    app.jinja_env.auto_reload = app.debug
 
     app.run(port=5001, host='0.0.0.0')
