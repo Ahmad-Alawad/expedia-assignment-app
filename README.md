@@ -9,8 +9,6 @@ Python 2.7
  - Activate the virtualenv using the command "pip install -r requirements.txt"
  - Run the application using the command "python server.py" on your terminal
  - Navigate to the application on your browser (http://0.0.0.0:5001/)
- 
- PS : the website is deployed using [Heroku](https://www.heroku.com/),, [Go to the website](https://stark-bayou-65684.herokuapp.com/)
 
 ## Assumptions
  - Make sure you have Python 2.7 on your local machine (Python 2.7: [link](https://www.python.org/download/releases/2.7/))
