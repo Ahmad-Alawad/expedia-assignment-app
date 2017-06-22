@@ -1,12 +1,13 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect
 import requests
+import os
 
 
 app = Flask(__name__)
 
 # Required to use Flask sessions
-app.secret_key = "ABC"
+app.config['SECRET_KEY'] = os.environ.get("FLASK_SECRET_KEY", "abcdef")
 
 app.jinja_env.undefined = StrictUndefined
 
@@ -53,8 +54,11 @@ def search():
 
 if __name__ == "__main__":
     app.debug = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
+    DEBUG = "NO_DEBUG" not in os.environ
 
-    app.run(port=5001, host='0.0.0.0')
+    PORT = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
