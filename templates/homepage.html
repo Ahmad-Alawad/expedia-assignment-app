@@ -16,28 +16,46 @@
     {% for flash in get_flashed_messages() %}
       <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
     {% endfor %}
+    
     <div class="container">
-	  <h2>Vertical (basic) form</h2>
-	  <form action="/action_page.php">
+	  <h2>Search for Deals</h2> 
+	  <form action="/search">
+	    
 	    <div class="form-group">
-	      <label for="email">Email:</label>
-	      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+	      <label for="destCity">destination City:</label>
+	      <input type="text" class="form-control" id="destCity" placeholder="Enter city name here" name="destCity">
 	    </div>
+
 	    <div class="form-group">
-	      <label for="pwd">Password:</label>
-	      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+	      <label for="length">how many days?</label>
+	      <input type="text" class="form-control" id="length" placeholder="Enter number of days here" name="length">
 	    </div>
-	    <div class="checkbox">
-	      <label><input type="checkbox" name="remember"> Remember me</label>
+
+	    <div class="form-group">
+	      <label for="minStarRate">minimum star rating:</label>
+	      <input type="text" class="form-control" id="maxStarRate" placeholder="out of 5" name="minStarRate">
 	    </div>
-	    <button type="submit" class="btn btn-default">Submit</button>
-	  </form>
+
+	    <div class="form-group">
+	      <label for="maxStarRate">maximum star rating:</label>
+	      <input type="text" class="form-control" id="minStarRate" placeholder="out of 5" name="maxStarRate">
+	    </div>
+
+	    <div class="form-group">
+	      <label for="minGuestRate">minimum guest rating:</label>
+	      <input type="text" class="form-control" id="minGuestRate" placeholder="out of 5" name="minGuestRate">
+	    </div>
+
+	    <div class="form-group">
+	      <label for="maxGuestRate">maximum guest rating:</label>
+	      <input type="text" class="form-control" id="maxGuestRate" placeholder="out of 5" name="maxGuestRate">
+	    </div>
+
+	   	<input type="submit" value="Search" name="Search"/>
+	  </form>	
 	</div>
   
 </div>
-
-</div>
-
 
 
 </body>
