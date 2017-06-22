@@ -1,5 +1,5 @@
 from jinja2 import StrictUndefined
-from flask import Flask, jsonify, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect
 import requests
 
 
@@ -18,18 +18,17 @@ def index():
     return render_template("homepage.html")
 
 
-
 @app.route('/search')
 def search():
     """Search."""
 
-    # get form inputs:
+    # Get form inputs:
     destCity = request.args.get('destCity')
     length = int(request.args.get('length'))
-    minStarRate = request.args.get('minStarRate')
-    maxStarRate = request.args.get('maxStarRate')
-    minGuestRate = request.args.get('minGuestRate')
-    maxGuestRate = request.args.get('maxGuestRate')
+    minStarRate = float(request.args.get('minStarRate'))
+    maxStarRate = float(request.args.get('maxStarRate'))
+    minGuestRate = float(request.args.get('minGuestRate'))
+    maxGuestRate = float(request.args.get('maxGuestRate'))
 
     # Search API:
     search_url = "http://offersvc.expedia.com/offers/v2/getOffers?scenario=deal-finder&page=foo&uid=foo&productType=Hotel&destinationCity={}&lengthOfStay={}".format(destCity, length)
@@ -39,51 +38,18 @@ def search():
         flash("Search isn't available now!!!")
         return redirect('/')
 
-    print search_url
-    print r.json()
-    # # 3. Display search results
-    # return render_template("search_results.html", customer=customer)
-    return render_template('search_results.html')
+    # Display search results
+    hotels_list = []
+    data = r.json()
+    for hotel in data['offers']['Hotel']:
+        hotel_name = hotel['hotelInfo']['hotelName']
+        price = float(hotel['hotelPricingInfo']['totalPriceValue'])
+        star_rate = float(hotel['hotelInfo']['hotelStarRating'])
+        guest_rate = float(hotel['hotelInfo']['hotelGuestReviewRating'])
+        if ((star_rate>=minStarRate) & (star_rate>=maxStarRate) & (guest_rate>=minGuestRate) & (guest_rate>=maxGuestRate)) :
+            hotels_list.append({'hotel_name':hotel_name, 'price':price, 'star_rate':star_rate, 'guest_rate':guest_rate})
 
-# @app.route('/add-customer')
-# def add_customer():
-#     """Display Add Customer Form"""
-    
-#     return render_template("add_customer.html")
-
-# @app.route('/process_adding_customer')
-# def add_customer_to_db():
-#     """Add customer to DB."""
-#     f_name = request.args.get('fname')
-#     l_name = request.args.get('lname')
-#     zip_code = request.args.get('zipcode')
-
-#     # To add this customer to db:
-#     # 1. Create the customer
-#     customer = Customer(fname=f_name, lname=l_name, zipcode=zip_code)
-
-#     # 2. Add this customer to session
-#     db.session.add(customer)
-
-#     # 3. Commit the changes
-#     db.session.commit()
-
-#     # 4. Display a flash message to confirm adding
-#     flash("Customer was addded successfully!!!")
-
-#     return redirect("/")
-
-
-# @app.route('/all_customers.json')
-# def get_all_customers_view():
-#     """Return all customers in json object"""
-
-#     all_customers = get_all_customers()
-#     customers_list = []
-#     for customer in all_customers:
-#         customer_dict = {'fname':customer.fname , 'lname':customer.lname}
-#         customers_list.append(customer_dict)
-#     return jsonify(customers_list)
+    return render_template('search_results.html', hotels_list=hotels_list)
 
 if __name__ == "__main__":
     app.debug = True
