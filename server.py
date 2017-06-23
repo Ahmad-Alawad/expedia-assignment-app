@@ -49,7 +49,7 @@ def search():
     data = r.json() # GET DATA FROM RESPONSE IN JSON FORMAT 
     
     # CREATE FILTER OUT THE RESULTS AND ADD THEM TO HOLTELS LIST ARRAY
-    for hotel in data['offers']['Hotel']:
+    for hotel in data['offers'].get('Hotel',[]):
         hotel_name = hotel['hotelInfo']['hotelName']
         price = float(hotel['hotelPricingInfo']['totalPriceValue'])
         star_rate = float(hotel['hotelInfo']['hotelStarRating'])

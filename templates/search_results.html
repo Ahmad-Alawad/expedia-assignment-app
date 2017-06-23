@@ -26,6 +26,7 @@
     
     <div class="container">  
 	  <h2>Search Results</h2>
+	  {% if hotels_list %}
 	  <h4 class='col-xs-3'>Hotel Name</h4>
 	  <h4 class='col-xs-3'>Price</h4>
 	  <h4 class='col-xs-3'>Star Rating</h4>
@@ -44,6 +45,9 @@
 	    	</li>
 	  	{% endfor %}	
 		</ul>
+		{% else %}
+		<h3> No Deals found for your search! Please try later</h3>
+		{% endif %}
 	</div>
 	
   
