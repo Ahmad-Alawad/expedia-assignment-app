@@ -56,7 +56,7 @@ def search():
         guest_rate = float(hotel['hotelInfo']['hotelGuestReviewRating'])
         if ((star_rate>=minStarRate) & (star_rate<=maxStarRate) & (guest_rate>=minGuestRate) & (guest_rate<=maxGuestRate)) :
             # CONSTRUCT HOTEL URL AND DECODE IT IN ORDER TO BE DIPLAYED IN RESULTS PAGE
-            hotel_url = unquote(hotel['hotelUrls']['hotelInfositeUrl']).decode('utf8')
+            hotel_url = unquote(hotel['hotelUrls']['hotelInfositeUrl']).encode().decode('utf8')
             hotels_list.append({'hotel_name':hotel_name, 'price':price, 'star_rate':star_rate, 'guest_rate':guest_rate, 'hotel_url':hotel_url})
 
     # DISPLAY THE RESULTS IN A TEMPLATE
