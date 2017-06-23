@@ -16,6 +16,7 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage."""
 
+    # RENDER THE MAIN TEMPLATE
     return render_template("homepage.html")
 
 
@@ -23,7 +24,7 @@ def index():
 def search():
     """Search."""
 
-    # Get form inputs:
+    # GET FORM INPUT VALUES:
     destCity = request.args.get('destCity')
     length = int(request.args.get('length'))
     minStarRate = float(request.args.get('minStarRate'))
@@ -31,29 +32,31 @@ def search():
     minGuestRate = float(request.args.get('minGuestRate'))
     maxGuestRate = float(request.args.get('maxGuestRate'))
 
-    # Search API:
+    # TRY TO SEARCH THE API:
     search_url = "http://offersvc.expedia.com/offers/v2/getOffers?scenario=deal-finder&page=foo&uid=foo&productType=Hotel&destinationCity={}&lengthOfStay={}".format(destCity, length)
     try:
         r = requests.get(search_url)
-    except:
+    except: #DISPLAY A FLASH MESSAGE IF REQUEST IS NOT POSSIBLE
         flash("Search isn't available now!!!")
-        return redirect('/')
+        return redirect('/') # REDIRECT TO THE HOMEPAGE
 
-    # Display search results
-    hotels_list = []
-    data = r.json()
+    # DISPLAY SEARCH RESULTS:
+    hotels_list = [] # THIS WILL HOLD THE HOTELS GET FROM THE RESPONCE
+    data = r.json() # GET DATA FROM RESPONSE IN JSON FORMAT 
+    
+    # CREATE FILTER OUT THE RESULTS AND ADD THEM TO HOLTELS LIST ARRAY
     for hotel in data['offers']['Hotel']:
         hotel_name = hotel['hotelInfo']['hotelName']
         price = float(hotel['hotelPricingInfo']['totalPriceValue'])
         star_rate = float(hotel['hotelInfo']['hotelStarRating'])
         guest_rate = float(hotel['hotelInfo']['hotelGuestReviewRating'])
-        if ((star_rate>=minStarRate) & (star_rate>=maxStarRate) & (guest_rate>=minGuestRate) & (guest_rate>=maxGuestRate)) :
+        if ((star_rate>=minStarRate) & (star_rate<=maxStarRate) & (guest_rate>=minGuestRate) & (guest_rate<=maxGuestRate)) :
             hotels_list.append({'hotel_name':hotel_name, 'price':price, 'star_rate':star_rate, 'guest_rate':guest_rate})
 
+    # DISPLAY THE RESULTS IN A TEMPLATE
     return render_template('search_results.html', hotels_list=hotels_list)
 
 if __name__ == "__main__":
-    app.debug = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # make sure templates, etc. are not cached in debug mode
