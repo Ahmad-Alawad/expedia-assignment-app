@@ -2,6 +2,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect
 import requests
 import os
+import urllib
 
 
 app = Flask(__name__)
@@ -51,7 +52,9 @@ def search():
         star_rate = float(hotel['hotelInfo']['hotelStarRating'])
         guest_rate = float(hotel['hotelInfo']['hotelGuestReviewRating'])
         if ((star_rate>=minStarRate) & (star_rate<=maxStarRate) & (guest_rate>=minGuestRate) & (guest_rate<=maxGuestRate)) :
-            hotels_list.append({'hotel_name':hotel_name, 'price':price, 'star_rate':star_rate, 'guest_rate':guest_rate})
+            # CONSTRUCT HOTEL URL AND DECODE IT IN ORDER TO BE DIPLAYED IN RESULTS PAGE
+            hotel_url = urllib.unquote(hotel['hotelUrls']['hotelInfositeUrl']).decode('utf8')
+            hotels_list.append({'hotel_name':hotel_name, 'price':price, 'star_rate':star_rate, 'guest_rate':guest_rate, 'hotel_url':hotel_url})
 
     # DISPLAY THE RESULTS IN A TEMPLATE
     return render_template('search_results.html', hotels_list=hotels_list)

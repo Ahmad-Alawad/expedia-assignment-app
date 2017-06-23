@@ -36,7 +36,7 @@
 	  	{% for hotel in hotels_list %}
 	    	<li class="list-group-item">
 	    		<div class='row'>
-		    		<p class='col-xs-3'>{{ hotel['hotel_name'] }}</p>
+		    		<p class='col-xs-3'><a href="{{ hotel['hotel_url'] }}">{{ hotel['hotel_name'] }}</a></p>
 		    		<p class='col-xs-3'>${{ hotel['price'] }}</p>
 		    		<p class='col-xs-3'>{{ hotel['star_rate'] }}</p>
 		    		<p class='col-xs-3'>{{ hotel['guest_rate'] }}</p>
