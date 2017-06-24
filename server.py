@@ -31,10 +31,24 @@ def search():
     # GET FORM INPUT VALUES:
     destCity = request.args.get('destCity')
     length = int(request.args.get('length'))
-    minStarRate = float(request.args.get('minStarRate'))
-    maxStarRate = float(request.args.get('maxStarRate'))
-    minGuestRate = float(request.args.get('minGuestRate'))
-    maxGuestRate = float(request.args.get('maxGuestRate'))
+    # if filters' values aren't numbers, set default values for them
+    try:
+        minStarRate = float(request.args.get('minStarRate'))
+    except:
+        minStarRate = 1
+    try:
+        maxStarRate = float(request.args.get('maxStarRate'))
+    except:
+        maxStarRate = 5
+    try:
+        minGuestRate = float(request.args.get('minGuestRate'))
+    except:
+        minGuestRate = 1
+    try:
+        maxGuestRate = float(request.args.get('maxGuestRate'))
+    except:
+        maxGuestRate = 5
+
 
     # TRY TO SEARCH THE API:
     search_url = "http://offersvc.expedia.com/offers/v2/getOffers?scenario=deal-finder&page=foo&uid=foo&productType=Hotel&destinationCity={}&lengthOfStay={}".format(destCity, length)
@@ -43,6 +57,7 @@ def search():
     except: #DISPLAY A FLASH MESSAGE IF REQUEST IS NOT POSSIBLE
         flash("Search isn't available now!!!")
         return redirect('/') # REDIRECT TO THE HOMEPAGE
+
 
     # DISPLAY SEARCH RESULTS:
     hotels_list = [] # THIS WILL HOLD THE HOTELS GET FROM THE RESPONCE
@@ -61,6 +76,8 @@ def search():
 
     # DISPLAY THE RESULTS IN A TEMPLATE
     return render_template('search_results.html', hotels_list=hotels_list)
+
+
 
 if __name__ == "__main__":
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
